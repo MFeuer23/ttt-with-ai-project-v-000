@@ -7,23 +7,40 @@ input = gets.strip
 
 
 if input == "2"
-  new_game = Game.new
-  new_game.play
+  Game.new.play
 elsif input == "1"
   puts "Would you like to play as X or O?"
      input_2 = gets.strip
      if input_2 == "O"
-       new_game = Game.new(Players::Computer.new("X"))
-       new_game.play
+       Game.new(Players::Computer.new("X", Strategies::Defend.new)).play
      elsif input_2 == "X"
-       new_game = Game.new(Players::Human.new("X"), Players::Computer.new("O"))
-       new_game.play
+       Game.new(Players::Human.new("X"), Players::Computer.new("O", Strategies::Defend.new)).play
      end
 elsif input == "0"
-   new_game = Game.new(Players::Computer.new("X"), Players::Computer.new("O"))
-   new_game.play
-end
+   Game.new(Players::Computer.new("X", Strategies::Defend.new), Players::Computer.new("O")).play
+elsif input.eql? "wargames"
+  strategy1 = Strategies::Defend.new
+  strategy2 = Strategies::Random.new
 
+  X = 0
+  O = 0
+  draw = 0
+
+  100.times do
+    new_game = Game.new(Players::Computer.new("X", strategy1), Players::Computer.new("O", strategy2))
+    new_game.play
+
+    if new_game.winner == "X"
+      X += 1
+    elsif new_game.winner == "O"
+      O += 1
+    elsif new_game.draw?
+      draw += 1
+    end
+    puts "X won #{X} times, O won #{O} times, #{draw} draws"
+  end
+
+end
 puts "Play again? (y/n)"
 again = gets.strip
 
@@ -32,7 +49,7 @@ if again == "y"
   puts "Enter the number of human players:"
   input = gets.strip
 
-
+include Strategies
   if input == "2"
     new_game = Game.new
     new_game.play
@@ -47,8 +64,33 @@ if again == "y"
          new_game.play
        end
   elsif input.eql? "0"
-     new_game = Game.new(Players::Computer.new("X"), Players::Computer.new("O"))
-     new_game.play
+    strategy1 = Strategies::Defend.new
+    strategy2 = Strategies::Random.new
+    new_game = Game.new(Players::Computer.new("X", strategy1), Players::Computer.new("O", strategy2))
+    new_game.play
+  elsif input.eql? "wargames"
+    puts "wargame fart"
+      strategy1 = Strategies::Defend.new
+      strategy2 = Strategies::Random.new
+
+      X = 0
+      O = 0
+      draw = 0
+
+      100.times do
+        new_game = Game.new(Players::Computer.new("X", strategy1), Players::Computer.new("O", strategy1))
+        new_game.play
+
+        if new_game.winner == "X"
+          X += 1
+        elsif new_game.winner == "O"
+          O += 1
+        elsif new_game.draw?
+          draw += 1
+        end
+        puts "X won #{X} times, O won #{O} times, #{draw} draws"
+    end
+
   end
 
 else

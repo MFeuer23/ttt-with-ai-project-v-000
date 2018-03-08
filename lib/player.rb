@@ -17,22 +17,15 @@ module Players
     end
   end
   class Computer < Player
-    def move(board)
-      WIN_COMBINATIONS.detect do |combination|
-        if board.cells[combination[0]] == board.cells[combination[1]] && board.cells[combination[0]] != " " && board.valid_move?(combination[2]+1)
-          return combination[2]+1
-        elsif board.cells[combination[0]] == board.cells[combination[2]] && board.cells[combination[0]] != " " && board.valid_move?(combination[1]+1)
-          return combination[1]+1
-        elsif board.cells[combination[1]] == board.cells[combination[2]] && board.cells[combination[1]] != " " && board.valid_move?(combination[0]+1)
-          return combination[0]+1
-        end
-       end
+    attr_accessor :token, :strategy
 
-      board.cells.each_with_index do |cell, index|
-        if cell == " "
-          return (index + 1).to_s
-        end
-      end
+    def initialize (token, strategy = Strategies::Defend.new)
+      @token = token
+      @strategy = strategy
+    end
+
+    def move(board)
+      @strategy.decide_move(board)
     end
   end
 end
